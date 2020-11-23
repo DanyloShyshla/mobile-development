@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="basic_margin">20dp</dimen>
+    <dimen name="button_bottom_margin">16dp</dimen>
+    <dimen name="layout_height">45dp</dimen>
+    <dimen name="password_top_padding">10dp</dimen>
+    <dimen name="welcoming_text_margin_top">228dp</dimen>
+    <dimen name="button_layout_height">56dp</dimen>
+    <dimen name="button_layout_width">0dp</dimen>
+</resources>
