@@ -23,45 +23,18 @@ public class MainActivity extends AppCompatActivity {
     private EditText password;
     private TextInputLayout inputLayoutEmailAddress;
     private TextInputLayout inputLayoutPassword;
+    private Button signInButton;
+    private TextView signUpRedirection;
+    private final CredentialValidator emailValidator = new EmailValidator();
+    private final CredentialValidator passwordValidator = new PasswordValidator();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        emailAddress = findViewById(R.id.email);
-        password = findViewById(R.id.password);
-        Button signInButton = findViewById(R.id.singInButton);
-        inputLayoutEmailAddress = findViewById(R.id.emailInputLayout);
-        inputLayoutPassword = findViewById(R.id.passwordInputLayout);
-        TextView signUpRedirection = findViewById(R.id.signUpRedirectionText);
-
-        /*Filed validation*/
-
-        EmailValidator emailValidator = new EmailValidator();
-        PasswordValidator passwordValidator = new PasswordValidator();
-
-        signInButton.setOnClickListener(v -> {
-            String emailValue = emailAddress.getText().toString();
-            String passwordValue = password.getText().toString();
-            String message = "Success";
-
-            if (!emailValidator.isValid(emailValue)) {
-                inputLayoutEmailAddress.setError("Enter a valid email");
-            } else {
-                inputLayoutEmailAddress.setErrorEnabled(false);
-            }
-
-            if (!passwordValidator.isValid(passwordValue)) {
-                inputLayoutPassword.setError("Enter a valid password");
-            } else {
-                inputLayoutPassword.setErrorEnabled(false);
-            }
-
-            if (emailValidator.isValid(emailValue) && passwordValidator.isValid(passwordValue)) {
-                Toast.makeText(v.getContext(), message, Toast.LENGTH_SHORT).show();
-            }
-        });
+        fieldInitialization();
+        fieldValidation();
 
         /*Sign up redirection text*/
 
@@ -75,8 +48,44 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(myIntent);
             }
         };
-        spannableString.setSpan(clickableSpan, 23, 30, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(clickableSpan, redirection.lastIndexOf("S"), redirection.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         signUpRedirection.setText(spannableString);
         signUpRedirection.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    private void fieldValidation() {
+        signInButton.setOnClickListener(v -> {
+            String emailValue = emailAddress.getText().toString();
+            String passwordValue = password.getText().toString();
+            String message = "Success";
+            boolean validation = true;
+
+            if (!emailValidator.isValid(emailValue)) {
+                inputLayoutEmailAddress.setError("Enter a valid email");
+                validation = false;
+            } else {
+                inputLayoutEmailAddress.setErrorEnabled(false);
+            }
+
+            if (!passwordValidator.isValid(passwordValue)) {
+                inputLayoutPassword.setError("Enter a valid password");
+                validation = false;
+            } else {
+                inputLayoutPassword.setErrorEnabled(false);
+            }
+
+            if (validation) {
+                Toast.makeText(v.getContext(), message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void fieldInitialization() {
+        emailAddress = findViewById(R.id.email);
+        password = findViewById(R.id.password);
+        signInButton = findViewById(R.id.singInButton);
+        inputLayoutEmailAddress = findViewById(R.id.emailInputLayout);
+        inputLayoutPassword = findViewById(R.id.passwordInputLayout);
+        signUpRedirection = findViewById(R.id.signUpRedirectionText);
     }
 }
