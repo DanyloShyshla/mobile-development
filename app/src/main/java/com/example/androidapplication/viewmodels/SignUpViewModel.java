@@ -4,9 +4,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.androidapplication.CredentialValidator;
-import com.example.androidapplication.EmailValidator;
-import com.example.androidapplication.NameValidator;
-import com.example.androidapplication.PasswordValidator;
+import com.example.androidapplication.validators.EmailValidator;
+import com.example.androidapplication.validators.NameValidator;
+import com.example.androidapplication.validators.PasswordValidator;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;

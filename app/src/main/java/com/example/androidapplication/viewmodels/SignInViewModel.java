@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.androidapplication.CredentialValidator;
-import com.example.androidapplication.EmailValidator;
-import com.example.androidapplication.PasswordValidator;
+import com.example.androidapplication.validators.EmailValidator;
+import com.example.androidapplication.validators.PasswordValidator;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,8 +35,10 @@ public class SignInViewModel extends ViewModel {
             //return;
         } else {
             Timber.i(email + " " + password);
+
             // Sign in logic with Firebase Auth
-            firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this::onComplete);
+            firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task ->
+                    isLoggedIn.setValue(task.isSuccessful()));
         }
 
 
@@ -52,9 +54,6 @@ public class SignInViewModel extends ViewModel {
 
     private void onComplete(Task<AuthResult> task) {
         isLoggedIn.setValue(task.isSuccessful());
-//                    if (task.isSuccessful()) {
-//                        isLoggedIn.setValue(true);
-//                    } else
-//                        isLoggedIn.setValue(false);
+
     }
 }

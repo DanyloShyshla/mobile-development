@@ -14,14 +14,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.androidapplication.BuildConfig;
 import com.example.androidapplication.R;
 import com.example.androidapplication.viewmodels.SignUpViewModel;
 
 import org.jetbrains.annotations.NotNull;
-
-import timber.log.Timber;
-
 
 public class SignUpFragment extends Fragment {
 
@@ -45,7 +41,6 @@ public class SignUpFragment extends Fragment {
         void onSignUpButtonClicked();
     }
 
-    //Why this function is here
     @Override
     public void onAttach(@NotNull Context context) {
         super.onAttach(context);
@@ -65,18 +60,14 @@ public class SignUpFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-        }
     }
 
     private void fieldInitialization(View rootView) {
-        EditText name = rootView.findViewById(R.id.name);
-        EditText emailAddress = rootView.findViewById(R.id.email);
-        EditText password = rootView.findViewById(R.id.password);
-        EditText confirmPassword = rootView.findViewById(R.id.confirmPassword);
-        Button signUpButton = rootView.findViewById(R.id.signUpButton);
+        name = rootView.findViewById(R.id.name);
+        emailAddress = rootView.findViewById(R.id.email);
+        password = rootView.findViewById(R.id.password);
+        confirmPassword = rootView.findViewById(R.id.confirmPassword);
+        signUpButton = rootView.findViewById(R.id.signUpButton);
     }
 
     @Override
@@ -86,31 +77,27 @@ public class SignUpFragment extends Fragment {
 
         fieldInitialization(rootView);
         registerViewModel();
-        onButtonClicked();
+        signUpButton.setOnClickListener(onSignUpClickListener);
         onReturnBackClicked(rootView);
 
         return rootView;
     }
 
-    private void onButtonClicked() {
+    private final View.OnClickListener onSignUpClickListener = view -> {
+        String nameValue = name.getText().toString();
+        String emailValue = emailAddress.getText().toString();
+        String passwordValue = password.getText().toString();
+        String confirmPasswordValue = confirmPassword.getText().toString();
 
-        signUpButton.setOnClickListener(view -> {
-            String nameValue = name.getText().toString();
-            String emailValue = emailAddress.getText().toString();
-            String passwordValue = password.getText().toString();
-            String confirmPasswordValue = confirmPassword.getText().toString();
-
-            viewModel.signUp(nameValue, emailValue, passwordValue, confirmPasswordValue);
-        });
-    }
+        viewModel.signUp(nameValue, emailValue, passwordValue, confirmPasswordValue);
+    };
 
     private void registerViewModel() {
         viewModel = new ViewModelProvider(this).get(SignUpViewModel.class);
         viewModel.getIsRegistered().observe(getViewLifecycleOwner(), isRegistered -> {
-            showMessage("Successfully logged in");
+            showMessage("Successfully signed up");
             onClickListener.onSignUpButtonClicked();
         });
-
         viewModel.getError().observe(this, this::showMessage);
     }
 
