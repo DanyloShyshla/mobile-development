@@ -11,5 +11,6 @@
     <string name="name">Name</string>
     <string name="confirm_password">Confirm password</string>
     <string name="sign_up">Sign Up</string>
+    <string name="Photos">Photos</string>
 
 </resources>

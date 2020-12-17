@@ -7,4 +7,8 @@
     <dimen name="welcoming_text_margin_top">228dp</dimen>
     <dimen name="button_layout_height">56dp</dimen>
     <dimen name="button_layout_width">0dp</dimen>
+
+    <!-- Photo list page-->
+    <dimen name="margin_medium">10dp</dimen>
+    <dimen name="list_item_height">30</dimen>
 </resources>
