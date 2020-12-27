@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">AndroidApplication</string>
+    <string name="sign_in">Ввійти</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="email">Електронна пошта</string>
+    <string name="sign_in_toolbar_text">Вхід</string>
+    <string name="don_t_have_an_account">Не маєш акаунту?</string>
+    <string name="password">Пароль</string>
+    <string name="sign_up_button">Зареєструватися</string>
+    <string name="name">Ім\'я</string>
+    <string name="confirm_password">Підтвердити пароль</string>
+    <string name="sign_up">Зареєструватися</string>
+    <string name="Photos">Фотографії</string>
+    <string name="change_language">Змінити мову</string>
+    <string name="edit_account">Редагувати акаунт</string>
+
+</resources>

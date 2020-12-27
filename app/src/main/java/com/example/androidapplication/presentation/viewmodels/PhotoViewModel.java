@@ -1,19 +1,13 @@
 package com.example.androidapplication.presentation.viewmodels;
 
-import android.nfc.Tag;
-import android.os.Build;
-import android.util.Log;
 
-import androidx.annotation.RequiresApi;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 
 import com.example.androidapplication.data.repository.RemoteRepository;
-import com.example.androidapplication.domain.entity.Example;
 import com.example.androidapplication.domain.entity.Result;
 import com.example.androidapplication.presentation.uidata.PhotoViewData;
-import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,22 +37,6 @@ public class PhotoViewModel extends ViewModel {
     //Load users and map into UI
     public void loadPhotoData() {
         Timber.wtf("Called loadPhotoData()");
-
-        //Mapper mapper = new Mapper();
-
-        /*compositeDisposable.add(remoteRepository.loadImages()
-                .map(mapper::apply)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        photoViewData -> response.setValue(photoViewData),
-                        error -> {
-                            Timber.tag(TAG).e("loadPhotoList%s", error.getLocalizedMessage());
-                            errorMessage.setValue(error.getMessage());
-                        }
-                )
-        );*/
-
         compositeDisposable.add(remoteRepository.loadImages()
                 .map(data -> {
                     List<PhotoViewData> result = new ArrayList<>();
@@ -81,7 +59,7 @@ public class PhotoViewModel extends ViewModel {
                 .subscribe(
                         data -> response.setValue(data),
                         error -> {
-                            Timber.tag(TAG).e("loadPhotoList%s", error.getLocalizedMessage());
+                            Timber.tag(TAG).e("loadPhotoList %s", error.getLocalizedMessage());
                             errorMessage.setValue(error.getMessage());
                         }
                 )

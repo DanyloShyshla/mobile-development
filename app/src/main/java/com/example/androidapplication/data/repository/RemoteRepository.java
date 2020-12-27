@@ -12,12 +12,11 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RemoteRepository implements DomainRepository {
-    //    private static final String BASE_URL = "https://api.unsplash.com/photos/";
-    //    private static final String ACCESS_KEY = "zKk4w1MWb4R4jZDw7YAVdH0S5EtYxxe0j4GECkpNfic";
+
     private static final String BASE_URL = "http://206.81.22.134:3000/";
     private static final String ACCESS_KEY = "results";
 
-    private RandomImageService randomImageService;
+    private final RandomImageService randomImageService;
 
     public RemoteRepository() {
         Retrofit retrofit = new Retrofit.Builder()
@@ -30,6 +29,7 @@ public class RemoteRepository implements DomainRepository {
         randomImageService = retrofit.create(RandomImageService.class);
     }
 
+    //Logging interceptor
     private OkHttpClient getLoggingClient() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BASIC);

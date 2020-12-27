@@ -2,24 +2,42 @@ package com.example.androidapplication.presentation.activities;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.androidapplication.R;
+import com.example.androidapplication.presentation.SharedPref;
 import com.example.androidapplication.presentation.adapters.PhotoAdapter;
 import com.example.androidapplication.presentation.viewmodels.PhotoViewModel;
+
+import java.util.Locale;
 
 import timber.log.Timber;
 
 public class StartActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
-    private PhotoAdapter photoAdapter = new PhotoAdapter();
+    private final PhotoAdapter photoAdapter = new PhotoAdapter();
+    private PhotoViewModel photoViewModel;
+    private Configuration configuration = new Configuration();
+    private SharedPref sharedPref = new SharedPref();
+
+    //UI
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private ProgressBar loadingIndicator;
 
 
     @SuppressLint("SetTextI18n")
@@ -28,39 +46,128 @@ public class StartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        String message = "Welcome";
+        /*String message = "Welcome";
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(message);
         builder.setTitle("Welcoming message");
         builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
         AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+        alertDialog.show();*/
 
+
+        sharedPref.init(this);
+        /*Timber.wtf(sharedPref.getLanguage());
+        if (sharedPref.getLanguage().equals("ua")) {
+            setLanguage(configuration, "ua", "UA");
+        }*/
+        sharedPref.setUserName("hello228");
+
+        initialiseToolbar();
+        initUI();
         initRecycler();
         initViewModel();
 
     }
 
+    private void initialiseToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        this.setSupportActionBar(toolbar);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        Timber.wtf("onCreateOptionsMenu");
+        getMenuInflater().inflate(R.menu.start_activity_menu, menu);
+        /*return super.onCreateOptionsMenu(menu);*/
+        return true;
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.change_language:
+                Toast.makeText(this, "Change language", Toast.LENGTH_SHORT).show();
+                changeLanguage();
+                return true;
+            case R.id.edit_account:
+                Toast.makeText(this, "Edit account", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    private void changeLanguage() {
+        String currentLanguage = sharedPref.getLanguage();
+        final String language = "ua";
+        final String country = "UA";
+        if (currentLanguage.equals(language)) {
+            Timber.wtf("Current language equals language");
+            this.getApplicationContext().getResources().updateConfiguration(configuration, null);
+            //setLanguage(configuration, "us","US");
+            sharedPref.setLanguage("us");
+        } else {
+            setLanguage(configuration, language, country);
+            sharedPref.setLanguage(language);
+        }
+        finish();
+        startActivity(new Intent(this, MainActivity.class));
+    }
+
+    private void initUI() {
+        //Refresh layout
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(() -> photoViewModel.loadPhotoData());
+
+        //Loading indicator
+        loadingIndicator = findViewById(R.id.loading_indicator);
+        loadingIndicator.setVisibility(View.VISIBLE);
+    }
+
     private void initViewModel() {
-        //PhotoViewModel photoViewModel = new ViewModelProvider(this).get(PhotoViewModel.class);
-        PhotoViewModel photoViewModel = new PhotoViewModel();
+        photoViewModel = new PhotoViewModel();
 
-        photoViewModel.getErrorMessage().observe(this, errorMessage ->
-                Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show());
+        photoViewModel.getErrorMessage().observe(this, errorMessage -> {
+            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+            hideLoading();
+        });
 
-        photoViewModel.getResponse().observe(this, response ->
-                photoAdapter.setItems(response));
+        photoViewModel.getResponse().observe(this, response -> {
+            photoAdapter.setItems(response);
+            hideLoading();
+        });
+
 
         photoViewModel.loadPhotoData();
     }
 
+    private void hideLoading() {
+        swipeRefreshLayout.setRefreshing(false);
+        loadingIndicator.setVisibility(View.GONE);
+    }
+
     private void initRecycler() {
-        recyclerView = findViewById(R.id.photo_data);
+        RecyclerView recyclerView = findViewById(R.id.photo_data);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(photoAdapter);
     }
 
     @Override
     public void onBackPressed() {
+    }
+
+    public void setLanguage(Configuration config, String language, String country) {
+        Locale locale;
+        locale = new Locale(language, country);
+        Locale.setDefault(locale);
+        config.setLocale(locale);
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
     }
 }
