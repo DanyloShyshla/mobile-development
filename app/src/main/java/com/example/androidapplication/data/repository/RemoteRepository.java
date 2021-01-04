@@ -13,7 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RemoteRepository implements DomainRepository {
 
-    private static final String BASE_URL = "http://206.81.22.134:3000/";
+    private static final String BASE_URL = "http://95.179.249.32:3000/";
     private static final String ACCESS_KEY = "results";
 
     private final RandomImageService randomImageService;

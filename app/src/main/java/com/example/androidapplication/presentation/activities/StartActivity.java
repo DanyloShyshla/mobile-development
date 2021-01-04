@@ -3,8 +3,10 @@ package com.example.androidapplication.presentation.activities;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,24 +22,38 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.androidapplication.R;
+import com.example.androidapplication.presentation.NetworkChangeReceiver;
+import com.example.androidapplication.presentation.OnItemClick;
 import com.example.androidapplication.presentation.SharedPref;
 import com.example.androidapplication.presentation.adapters.PhotoAdapter;
+import com.example.androidapplication.presentation.fragments.AccountFragment;
+import com.example.androidapplication.presentation.uidata.PhotoViewData;
 import com.example.androidapplication.presentation.viewmodels.PhotoViewModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Locale;
 
 import timber.log.Timber;
 
-public class StartActivity extends AppCompatActivity {
+public class StartActivity extends AppCompatActivity implements AccountFragment.OnButtonClickListener, OnItemClick {
 
     private final PhotoAdapter photoAdapter = new PhotoAdapter();
     private PhotoViewModel photoViewModel;
-    private Configuration configuration = new Configuration();
-    private SharedPref sharedPref = new SharedPref();
+    private final Configuration configuration = new Configuration();
+    private final SharedPref sharedPref = new SharedPref();
+    private final NetworkChangeReceiver networkChangeReceiver = new NetworkChangeReceiver();
+    private String TAG;
 
     //UI
     private SwipeRefreshLayout swipeRefreshLayout;
     private ProgressBar loadingIndicator;
+
+    //Fragments
+    private final AccountFragment accountFragment = new AccountFragment();
+
+    /*    private PhotoViewData photoViewData;*/
 
 
     @SuppressLint("SetTextI18n")
@@ -46,15 +62,6 @@ public class StartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        /*String message = "Welcome";
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(message);
-        builder.setTitle("Welcoming message");
-        builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();*/
-
-
         sharedPref.init(this);
         /*Timber.wtf(sharedPref.getLanguage());
         if (sharedPref.getLanguage().equals("ua")) {
@@ -62,12 +69,17 @@ public class StartActivity extends AppCompatActivity {
         }*/
         sharedPref.setUserName("hello228");
 
+        registerReceiver(networkChangeReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+
         initialiseToolbar();
         initUI();
         initRecycler();
         initViewModel();
 
+
     }
+
+
 
     private void initialiseToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -77,6 +89,12 @@ public class StartActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(networkChangeReceiver);
     }
 
     @Override
@@ -97,6 +115,7 @@ public class StartActivity extends AppCompatActivity {
                 return true;
             case R.id.edit_account:
                 Toast.makeText(this, "Edit account", Toast.LENGTH_SHORT).show();
+                getSupportFragmentManager().beginTransaction().add(R.id.activity_start, accountFragment).commit();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -137,6 +156,13 @@ public class StartActivity extends AppCompatActivity {
         photoViewModel.getErrorMessage().observe(this, errorMessage -> {
             Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
             hideLoading();
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(errorMessage);
+            builder.setTitle("Error");
+            builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
         });
 
         photoViewModel.getResponse().observe(this, response -> {
@@ -147,6 +173,7 @@ public class StartActivity extends AppCompatActivity {
 
         photoViewModel.loadPhotoData();
     }
+
 
     private void hideLoading() {
         swipeRefreshLayout.setRefreshing(false);
@@ -169,5 +196,18 @@ public class StartActivity extends AppCompatActivity {
         Locale.setDefault(locale);
         config.setLocale(locale);
         getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+    }
+
+    @Override
+    public void onEditAccountButtonClicked() {
+        finish();
+    }
+
+    @Override
+    public void onItemClick(PhotoViewData photoViewData) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("photo", photoViewData);
+        startActivity(intent);
+        Toast.makeText(this, "New intent", Toast.LENGTH_SHORT).show();
     }
 }

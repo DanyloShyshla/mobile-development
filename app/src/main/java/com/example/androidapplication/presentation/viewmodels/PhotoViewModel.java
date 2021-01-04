@@ -36,13 +36,13 @@ public class PhotoViewModel extends ViewModel {
 
     //Load users and map into UI
     public void loadPhotoData() {
-        Timber.wtf("Called loadPhotoData()");
+        //testTimber.wtf("Called loadPhotoData()");
         compositeDisposable.add(remoteRepository.loadImages()
                 .map(data -> {
                     List<PhotoViewData> result = new ArrayList<>();
                     for (Result resultItem : data.getResults()) {
 
-                        Timber.wtf("CreatedAt info %s", resultItem.getCreatedAt());
+                        //Timber.wtf("CreatedAt info %s", resultItem.getCreatedAt());
 
                         PhotoViewData photoViewData = new PhotoViewData(
                                 resultItem.getUser().getFirstName(),

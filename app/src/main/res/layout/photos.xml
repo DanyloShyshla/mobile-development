@@ -1,53 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    tools:ignore="ExtraText">
 
-
-    <ImageView
-        android:id="@+id/photo"
-        android:layout_width="204dp"
-        android:layout_height="203dp"
-        android:layout_marginLeft="@dimen/margin_medium"
-        android:layout_marginTop="@dimen/margin_medium"
-        app:srcCompat="@mipmap/ic_launcher" />
-
-
-    <LinearLayout
-        android:id="@+id/layout_bottom"
-        android:layout_marginTop="@dimen/margin_medium"
-        android:layout_width="wrap_content"
+   <!-- <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.55"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:checkable="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:theme="@style/Platform.MaterialComponents"
 
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">-->
 
-        <TextView
+        <ImageView
+            android:id="@+id/photo"
+            android:layout_width="204dp"
+            android:layout_height="203dp"
+            android:layout_marginLeft="@dimen/margin_medium"
             android:layout_marginTop="@dimen/margin_medium"
-            android:id="@+id/description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            />
+            app:srcCompat="@mipmap/ic_launcher" />
 
 
-        <TextView
-            android:id="@+id/likes"
+        <LinearLayout
+            android:id="@+id/layout_bottom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_medium"
+            android:layout_weight="0.55"
+            android:gravity="center"
+            android:orientation="vertical">
 
-            />
 
-        <TextView
-            android:id="@+id/photographer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_medium"
 
-            android:layout_marginTop="@dimen/margin_medium" />
+                />
 
-    </LinearLayout>
+
+            <TextView
+                android:id="@+id/likes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_medium"
+
+                />
+
+            <TextView
+                android:id="@+id/photographer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="@dimen/margin_medium" />
+
+        </LinearLayout>
+
+  <!--  </com.google.android.material.card.MaterialCardView>-->
+
+
 </LinearLayout>

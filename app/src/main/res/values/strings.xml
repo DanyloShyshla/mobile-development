@@ -14,5 +14,6 @@
     <string name="Photos">Photos</string>
     <string name="change_language">Change language</string>
     <string name="edit_account">Edit account</string>
+    <string name="edit_account_button_text">Edit account</string>
 
 </resources>
